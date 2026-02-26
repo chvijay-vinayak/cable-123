@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chandini Cable Network</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+        }
+
+        header {
+            background: #1A3C6E;
+            color: white;
+            padding: 15px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            cursor: pointer;
+        }
+
+        .hero {
+            background: linear-gradient(to right, #1A3C6E, #0f2747);
+            color: white;
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .hero h2 {
+            font-size: 40px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background: #00c3ff;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .services {
+            padding: 50px;
+            text-align: center;
+        }
+
+        .service-box {
+            display: inline-block;
+            width: 250px;
+            margin: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        footer {
+            background: #1A3C6E;
+            color: white;
+            text-align: center;
+            padding: 15px;
+        }
+
+        /* Modal styles */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+        }
+
+        .modal {
+            background: white;
+            width: 90%;
+            max-width: 480px;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .modal h3 {
+            margin-top: 0;
+        }
+
+        .modal .close {
+            float: right;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display:block; margin-bottom:6px; }
+        .form-group input, .form-group textarea {
+            width:100%; padding:8px; box-sizing:border-box; border:1px solid #ccc; border-radius:4px;
+        }
+
+        .actions { text-align: right; margin-top: 10px; }
+
+        /* show modal */
+        .modal-backdrop.show { display:flex; }
+
+        /* small screens tweaks */
+        @media (min-width: 700px) {
+            .hero { padding: 120px 20px; }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Chandini Cable Network</h1>
+    <nav>
+        <a data-target="home">Home</a>
+        <a data-target="services">Services</a>
+        <a id="contact-link">Contact</a>
+        <a id="login-link">Login</a>
+    </nav>
+</header>
+
+<section class="hero" id="home">
+    <h2>Reliable Cable TV Services</h2>
+    <p>Serving 2000+ Happy Customers</p>
+    <br>
+    <button id="get-connection" class="btn">Get Connection</button>
+</section>
+
+<section class="services" id="services">
+    <h2>Our Services</h2>
+
+    <div class="service-box">
+        <h3>Basic Package</h3>
+        <p>100+ Channels</p>
+        <p>Affordable Price</p>
+        <div class="actions"><button class="btn action-order" data-package="Basic">Order</button></div>
+    </div>
+
+    <div class="service-box">
+        <h3>HD Package</h3>
+        <p>200+ Channels</p>
+        <p>Crystal Clear Quality</p>
+        <div class="actions"><button class="btn action-order" data-package="HD">Order</button></div>
+    </div>
+
+    <div class="service-box">
+        <h3>Premium Package</h3>
+        <p>All Channels + Sports</p>
+        <p>Best Entertainment</p>
+        <div class="actions"><button class="btn action-order" data-package="Premium">Order</button></div>
+    </div>
+
+</section>
+
+<footer>
+    © 2026 Chandini Cable Network | All Rights Reserved
+</footer>
+
+<!-- Contact Modal -->
+<div id="contact-modal" class="modal-backdrop" role="dialog" aria-hidden="true">
+    <div class="modal" role="document">
+        <span class="close" id="close-contact">×</span>
+        <h3>Get Connection / Contact Us</h3>
+        <form id="contact-form">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input id="name" name="name" required />
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone</label>
+                <input id="phone" name="phone" required />
+            </div>
+            <div class="form-group">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" rows="3"></textarea>
+            </div>
+            <div class="actions">
+                <button type="submit" class="btn">Send</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Login Modal -->
+<div id="login-modal" class="modal-backdrop" role="dialog" aria-hidden="true">
+    <div class="modal" role="document">
+        <span class="close" id="close-login">×</span>
+        <h3>Login</h3>
+        <form id="login-form">
+            <div class="form-group">
+                <label for="login-email">Email</label>
+                <input id="login-email" name="email" type="email" required />
+            </div>
+            <div class="form-group">
+                <label for="login-pass">Password</label>
+                <input id="login-pass" name="password" type="password" required />
+            </div>
+            <div class="actions">
+                <button type="submit" class="btn">Login</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Smooth scroll for nav links
+    document.querySelectorAll('nav a[data-target]').forEach(a => {
+        a.addEventListener('click', () => {
+            const id = a.getAttribute('data-target');
+            const el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+
+    // Modal helpers
+    const contactModal = document.getElementById('contact-modal');
+    const loginModal = document.getElementById('login-modal');
+    function openModal(modal) { modal.classList.add('show'); modal.setAttribute('aria-hidden', 'false'); }
+    function closeModal(modal) { modal.classList.remove('show'); modal.setAttribute('aria-hidden', 'true'); }
+
+    document.getElementById('contact-link').addEventListener('click', () => openModal(contactModal));
+    document.getElementById('get-connection').addEventListener('click', () => openModal(contactModal));
+    document.getElementById('login-link').addEventListener('click', () => openModal(loginModal));
+
+    document.getElementById('close-contact').addEventListener('click', () => closeModal(contactModal));
+    document.getElementById('close-login').addEventListener('click', () => closeModal(loginModal));
+
+    // Close when clicking outside modal content
+    document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
+        backdrop.addEventListener('click', (e) => {
+            if (e.target === backdrop) closeModal(backdrop);
+        });
+    });
+
+    // Handle contact form submit
+    document.getElementById('contact-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('name').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const message = document.getElementById('message').value.trim();
+        // For now just simulate success
+        alert('Thank you, ' + (name || 'customer') + '! We received your request.');
+        e.target.reset();
+        closeModal(contactModal);
+    });
+
+    // Handle login submit (demo only)
+    document.getElementById('login-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        // Demo behavior: show success and close
+        alert('Login successful (demo).');
+        e.target.reset();
+        closeModal(loginModal);
+    });
+
+    // Order buttons open contact modal prefilled
+    document.querySelectorAll('.action-order').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const pkg = btn.getAttribute('data-package') || '';
+            openModal(contactModal);
+            // Prefill message after modal opens
+            setTimeout(() => {
+                const msgEl = document.getElementById('message');
+                if (msgEl) msgEl.value = `I'd like to order the ${pkg} package.`;
+            }, 150);
+        });
+    });
+
+    // Keyboard: Esc closes modals
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeModal(contactModal);
+            closeModal(loginModal);
+        }
+    });
+</script>
+
+</body>
+</html>
