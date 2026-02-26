@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Chandini Cable Network</title>
     <meta charset="UTF-8">
@@ -71,7 +72,7 @@
             padding: 20px;
             background: white;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         footer {
@@ -85,7 +86,7 @@
         .modal-backdrop {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             display: none;
             align-items: center;
             justify-content: center;
@@ -98,7 +99,7 @@
             max-width: 480px;
             border-radius: 8px;
             padding: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         }
 
         .modal h3 {
@@ -111,191 +112,447 @@
             font-weight: bold;
         }
 
-        .form-group { margin-bottom: 12px; }
-        .form-group label { display:block; margin-bottom:6px; }
-        .form-group input, .form-group textarea {
-            width:100%; padding:8px; box-sizing:border-box; border:1px solid #ccc; border-radius:4px;
+        .form-group {
+            margin-bottom: 12px;
         }
 
-        .actions { text-align: right; margin-top: 10px; }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .actions {
+            text-align: right;
+            margin-top: 10px;
+        }
 
         /* show modal */
-        .modal-backdrop.show { display:flex; }
+        .modal-backdrop.show {
+            display: flex;
+        }
+
+        /* modal tab links */
+        .modal-switch {
+            text-align: center;
+            margin-top: 14px;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .modal-switch a {
+            color: #1A3C6E;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .field-error {
+            color: #c00;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
 
         /* small screens tweaks */
         @media (min-width: 700px) {
-            .hero { padding: 120px 20px; }
+            .hero {
+                padding: 120px 20px;
+            }
         }
     </style>
 </head>
 
 <body>
 
-<header>
-    <h1>Chandini Cable Network</h1>
-    <nav>
-        <a data-target="home">Home</a>
-        <a data-target="services">Services</a>
-        <a id="contact-link">Contact</a>
-        <a id="login-link">Login</a>
-    </nav>
-</header>
+    <header>
+        <h1>Chandini Cable Network</h1>
+        <nav>
+            <a data-target="home">Home</a>
+            <a data-target="services">Services</a>
+            <a id="contact-link">Contact</a>
+            <a id="login-link">Login</a>
+            <a id="signup-link" style="background:#00c3ff;padding:6px 14px;border-radius:4px;font-weight:bold;">Sign
+                Up</a>
+        </nav>
+    </header>
 
-<section class="hero" id="home">
-    <h2>Reliable Cable TV Services</h2>
-    <p>Serving 2000+ Happy Customers</p>
-    <br>
-    <button id="get-connection" class="btn">Get Connection</button>
-</section>
+    <section class="hero" id="home">
+        <h2>Reliable Cable TV Services</h2>
+        <p>Serving 2000+ Happy Customers</p>
+        <br>
+        <button id="get-connection" class="btn">Get Connection</button>
+    </section>
 
-<section class="services" id="services">
-    <h2>Our Services</h2>
+    <section class="services" id="services">
+        <h2>Our Services</h2>
 
-    <div class="service-box">
-        <h3>Basic Package</h3>
-        <p>100+ Channels</p>
-        <p>Affordable Price</p>
-        <div class="actions"><button class="btn action-order" data-package="Basic">Order</button></div>
+        <div class="service-box">
+            <h3>Basic Package</h3>
+            <p>100+ Channels</p>
+            <p>Affordable Price</p>
+            <div class="actions"><button class="btn action-order" data-package="Basic">Order</button></div>
+        </div>
+
+        <div class="service-box">
+            <h3>HD Package</h3>
+            <p>200+ Channels</p>
+            <p>Crystal Clear Quality</p>
+            <div class="actions"><button class="btn action-order" data-package="HD">Order</button></div>
+        </div>
+
+        <div class="service-box">
+            <h3>Premium Package</h3>
+            <p>All Channels + Sports</p>
+            <p>Best Entertainment</p>
+            <div class="actions"><button class="btn action-order" data-package="Premium">Order</button></div>
+        </div>
+
+    </section>
+
+    <footer>
+        © 2026 Chandini Cable Network | All Rights Reserved
+    </footer>
+
+    <!-- Contact Modal -->
+    <div id="contact-modal" class="modal-backdrop" role="dialog" aria-hidden="true">
+        <div class="modal" role="document">
+            <span class="close" id="close-contact">×</span>
+            <h3>Get Connection / Contact Us</h3>
+            <form id="contact-form">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input id="name" name="name" required />
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input id="phone" name="phone" required />
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" rows="3"></textarea>
+                </div>
+                <div class="actions">
+                    <button type="submit" class="btn">Send</button>
+                </div>
+            </form>
+        </div>
     </div>
 
-    <div class="service-box">
-        <h3>HD Package</h3>
-        <p>200+ Channels</p>
-        <p>Crystal Clear Quality</p>
-        <div class="actions"><button class="btn action-order" data-package="HD">Order</button></div>
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal-backdrop" role="dialog" aria-hidden="true">
+        <div class="modal" role="document">
+            <span class="close" id="close-login">×</span>
+            <h3>Login</h3>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input id="login-email" name="email" type="email" required />
+                </div>
+                <div class="form-group">
+                    <label for="login-pass">Password</label>
+                    <input id="login-pass" name="password" type="password" required />
+                </div>
+                <div class="actions">
+                    <button type="submit" class="btn">Login</button>
+                </div>
+            </form>
+            <div class="modal-switch">Don't have an account? <a id="switch-to-signup">Sign Up</a></div>
+        </div>
     </div>
 
-    <div class="service-box">
-        <h3>Premium Package</h3>
-        <p>All Channels + Sports</p>
-        <p>Best Entertainment</p>
-        <div class="actions"><button class="btn action-order" data-package="Premium">Order</button></div>
+    <!-- Sign Up Modal -->
+    <div id="signup-modal" class="modal-backdrop" role="dialog" aria-hidden="true">
+        <div class="modal" role="document">
+            <span class="close" id="close-signup">×</span>
+            <h3>Create Account</h3>
+            <form id="signup-form" novalidate>
+                <div class="form-group">
+                    <label for="su-name">Full Name</label>
+                    <input id="su-name" name="name" type="text" placeholder="Your full name" required />
+                </div>
+                <div class="form-group">
+                    <label for="su-phone">Phone Number</label>
+                    <input id="su-phone" name="phone" type="tel" placeholder="10-digit mobile number" required />
+                </div>
+                <div class="form-group">
+                    <label for="su-email">Email</label>
+                    <input id="su-email" name="email" type="email" placeholder="you@example.com" required />
+                </div>
+                <div class="form-group">
+                    <label for="su-pass">Password</label>
+                    <input id="su-pass" name="password" type="password" placeholder="Min. 6 characters" required />
+                </div>
+                <div class="form-group">
+                    <label for="su-confirm">Confirm Password</label>
+                    <input id="su-confirm" name="confirm" type="password" placeholder="Re-enter password" required />
+                    <div class="field-error" id="pw-match-err">Passwords do not match.</div>
+                </div>
+                <div class="actions">
+                    <button type="submit" class="btn" style="background:#1A3C6E;">Create Account</button>
+                </div>
+            </form>
+            <div class="modal-switch">Already have an account? <a id="switch-to-login">Login</a></div>
+        </div>
     </div>
 
-</section>
-
-<footer>
-    © 2026 Chandini Cable Network | All Rights Reserved
-</footer>
-
-<!-- Contact Modal -->
-<div id="contact-modal" class="modal-backdrop" role="dialog" aria-hidden="true">
-    <div class="modal" role="document">
-        <span class="close" id="close-contact">×</span>
-        <h3>Get Connection / Contact Us</h3>
-        <form id="contact-form">
-            <div class="form-group">
-                <label for="name">Name</label>
-                <input id="name" name="name" required />
-            </div>
-            <div class="form-group">
-                <label for="phone">Phone</label>
-                <input id="phone" name="phone" required />
-            </div>
-            <div class="form-group">
-                <label for="message">Message</label>
-                <textarea id="message" name="message" rows="3"></textarea>
-            </div>
-            <div class="actions">
-                <button type="submit" class="btn">Send</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Login Modal -->
-<div id="login-modal" class="modal-backdrop" role="dialog" aria-hidden="true">
-    <div class="modal" role="document">
-        <span class="close" id="close-login">×</span>
-        <h3>Login</h3>
-        <form id="login-form">
-            <div class="form-group">
-                <label for="login-email">Email</label>
-                <input id="login-email" name="email" type="email" required />
-            </div>
-            <div class="form-group">
-                <label for="login-pass">Password</label>
-                <input id="login-pass" name="password" type="password" required />
-            </div>
-            <div class="actions">
-                <button type="submit" class="btn">Login</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<script>
-    // Smooth scroll for nav links
-    document.querySelectorAll('nav a[data-target]').forEach(a => {
-        a.addEventListener('click', () => {
-            const id = a.getAttribute('data-target');
-            const el = document.getElementById(id);
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
+    <script>
+        // Smooth scroll for nav links
+        document.querySelectorAll('nav a[data-target]').forEach(a => {
+            a.addEventListener('click', () => {
+                const id = a.getAttribute('data-target');
+                const el = document.getElementById(id);
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+            });
         });
-    });
 
-    // Modal helpers
-    const contactModal = document.getElementById('contact-modal');
-    const loginModal = document.getElementById('login-modal');
-    function openModal(modal) { modal.classList.add('show'); modal.setAttribute('aria-hidden', 'false'); }
-    function closeModal(modal) { modal.classList.remove('show'); modal.setAttribute('aria-hidden', 'true'); }
+        // Modal helpers
+        const contactModal = document.getElementById('contact-modal');
+        const loginModal = document.getElementById('login-modal');
+        const signupModal = document.getElementById('signup-modal');
 
-    document.getElementById('contact-link').addEventListener('click', () => openModal(contactModal));
-    document.getElementById('get-connection').addEventListener('click', () => openModal(contactModal));
-    document.getElementById('login-link').addEventListener('click', () => openModal(loginModal));
+        function openModal(modal) { modal.classList.add('show'); modal.setAttribute('aria-hidden', 'false'); }
+        function closeModal(modal) { modal.classList.remove('show'); modal.setAttribute('aria-hidden', 'true'); }
 
-    document.getElementById('close-contact').addEventListener('click', () => closeModal(contactModal));
-    document.getElementById('close-login').addEventListener('click', () => closeModal(loginModal));
+        document.getElementById('contact-link').addEventListener('click', () => openModal(contactModal));
+        document.getElementById('get-connection').addEventListener('click', () => openModal(contactModal));
+        document.getElementById('login-link').addEventListener('click', () => openModal(loginModal));
+        document.getElementById('signup-link').addEventListener('click', () => openModal(signupModal));
 
-    // Close when clicking outside modal content
-    document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
-        backdrop.addEventListener('click', (e) => {
-            if (e.target === backdrop) closeModal(backdrop);
+        document.getElementById('close-contact').addEventListener('click', () => closeModal(contactModal));
+        document.getElementById('close-login').addEventListener('click', () => closeModal(loginModal));
+        document.getElementById('close-signup').addEventListener('click', () => closeModal(signupModal));
+
+        // Switch between Login <-> Sign Up
+        document.getElementById('switch-to-signup').addEventListener('click', () => { closeModal(loginModal); openModal(signupModal); });
+        document.getElementById('switch-to-login').addEventListener('click', () => { closeModal(signupModal); openModal(loginModal); });
+
+        // Close when clicking outside modal content
+        document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
+            backdrop.addEventListener('click', (e) => { if (e.target === backdrop) closeModal(backdrop); });
         });
-    });
 
-    // Handle contact form submit
-    document.getElementById('contact-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const name = document.getElementById('name').value.trim();
-        const phone = document.getElementById('phone').value.trim();
-        const message = document.getElementById('message').value.trim();
-        // For now just simulate success
-        alert('Thank you, ' + (name || 'customer') + '! We received your request.');
-        e.target.reset();
-        closeModal(contactModal);
-    });
-
-    // Handle login submit (demo only)
-    document.getElementById('login-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        // Demo behavior: show success and close
-        alert('Login successful (demo).');
-        e.target.reset();
-        closeModal(loginModal);
-    });
-
-    // Order buttons open contact modal prefilled
-    document.querySelectorAll('.action-order').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const pkg = btn.getAttribute('data-package') || '';
-            openModal(contactModal);
-            // Prefill message after modal opens
-            setTimeout(() => {
-                const msgEl = document.getElementById('message');
-                if (msgEl) msgEl.value = `I'd like to order the ${pkg} package.`;
-            }, 150);
+        // Handle contact form submit
+        document.getElementById('contact-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const message = document.getElementById('message').value.trim();
+            try {
+                const key = 'cable_submissions';
+                const existing = JSON.parse(localStorage.getItem(key) || '[]');
+                existing.push({ name, phone, message, time: new Date().toISOString() });
+                localStorage.setItem(key, JSON.stringify(existing));
+            } catch (err) { console.error('Failed to save submission', err); }
+            alert('Thank you, ' + (name || 'customer') + '! We received your request.');
+            e.target.reset();
+            closeModal(contactModal);
         });
-    });
 
-    // Keyboard: Esc closes modals
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
+        // Helper: close modal and scroll to Home
+        function goHome() {
             closeModal(contactModal);
             closeModal(loginModal);
+            closeModal(signupModal);
+            document.getElementById('home').scrollIntoView({ behavior: 'smooth' });
         }
-    });
-</script>
+
+        // Login submit — Firebase module overrides this with real auth
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Will be handled by Firebase module; this is a no-op fallback
+            goHome();
+        });
+
+        // Signup submit — Firebase module overrides this with real auth
+        document.getElementById('signup-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const pass = document.getElementById('su-pass').value;
+            const confirm = document.getElementById('su-confirm').value;
+            const errEl = document.getElementById('pw-match-err');
+            if (pass !== confirm) { errEl.style.display = 'block'; return; }
+            errEl.style.display = 'none';
+            const name = document.getElementById('su-name').value.trim();
+            const phone = document.getElementById('su-phone').value.trim();
+            const email = document.getElementById('su-email').value.trim();
+            // Save to localStorage as fallback
+            try {
+                const key = 'cable_users';
+                const users = JSON.parse(localStorage.getItem(key) || '[]');
+                if (users.find(u => u.email === email)) {
+                    alert('An account with this email already exists. Please login.');
+                    return;
+                }
+                users.push({ name, phone, email, time: new Date().toISOString() });
+                localStorage.setItem(key, JSON.stringify(users));
+            } catch (err) { console.error(err); }
+            e.target.reset();
+            goHome();
+        });
+
+        // Order buttons open contact modal prefilled
+        document.querySelectorAll('.action-order').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const pkg = btn.getAttribute('data-package') || '';
+                openModal(contactModal);
+                setTimeout(() => {
+                    const msgEl = document.getElementById('message');
+                    if (msgEl) msgEl.value = `I'd like to order the ${pkg} package.`;
+                }, 150);
+            });
+        });
+
+        // Keyboard: Esc closes all modals
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') { closeModal(contactModal); closeModal(loginModal); closeModal(signupModal); }
+        });
+    </script>
+
+    <!-- Firebase integration (client-side). Replace placeholders in firebaseConfig with your project values. -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // reflect auth state in UI (optional)
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                // user signed in
+                console.log('Signed in:', user.uid, user.email);
+            } else {
+                console.log('Not signed in');
+            }
+        });
+
+        // Override contact form handler to send to Firestore when logged in
+        const contactForm = document.getElementById('contact-form');
+        if (contactForm) {
+            contactForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const name = document.getElementById('name').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                const message = document.getElementById('message').value.trim();
+
+                const user = auth.currentUser;
+                if (!user) {
+                    // prompt user to login
+                    alert('Please login or create an account before submitting.');
+                    // open login modal if present
+                    const loginModal = document.getElementById('login-modal');
+                    if (loginModal) loginModal.classList.add('show');
+                    return;
+                }
+
+                // Save to Firestore
+                try {
+                    await addDoc(collection(db, 'submissions'), {
+                        name,
+                        phone,
+                        message,
+                        uid: user.uid,
+                        email: user.email || null,
+                        time: serverTimestamp()
+                    });
+                } catch (err) {
+                    console.error('Firestore save failed', err);
+                    alert('Failed to save to server — submission saved locally.');
+                }
+
+                // still keep localStorage fallback
+                try {
+                    const key = 'cable_submissions';
+                    const existing = JSON.parse(localStorage.getItem(key) || '[]');
+                    existing.push({ name, phone, message, time: new Date().toISOString(), uid: user.uid, email: user.email || null });
+                    localStorage.setItem(key, JSON.stringify(existing));
+                } catch (err) {
+                    console.error('Failed to save submission locally', err);
+                }
+
+                alert('Thank you, ' + (name || 'customer') + '! We received your request.');
+                e.target.reset();
+                // close modal if exists
+                const contactModal = document.getElementById('contact-modal');
+                if (contactModal) contactModal.classList.remove('show');
+            });
+        }
+
+        // Firebase login form
+        const loginForm = document.getElementById('login-form');
+        if (loginForm) {
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('login-email').value.trim();
+                const password = document.getElementById('login-pass').value;
+                if (!email || !password) return alert('Enter email and password');
+                try {
+                    await signInWithEmailAndPassword(auth, email, password);
+                    alert('Logged in successfully!');
+                    document.getElementById('login-modal').classList.remove('show');
+                    e.target.reset();
+                } catch (err) {
+                    alert('Login failed: ' + (err.message || err));
+                }
+            });
+        }
+
+        // Firebase sign-up form
+        const signupForm = document.getElementById('signup-form');
+        if (signupForm) {
+            signupForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const name = document.getElementById('su-name').value.trim();
+                const phone = document.getElementById('su-phone').value.trim();
+                const email = document.getElementById('su-email').value.trim();
+                const pass = document.getElementById('su-pass').value;
+                const confirm = document.getElementById('su-confirm').value;
+                const errEl = document.getElementById('pw-match-err');
+
+                if (pass !== confirm) { errEl.style.display = 'block'; return; }
+                errEl.style.display = 'none';
+                if (pass.length < 6) return alert('Password must be at least 6 characters.');
+
+                try {
+                    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+                    // Store extra profile info in Firestore
+                    try {
+                        await addDoc(collection(db, 'users'), {
+                            name, phone, email, uid: cred.user.uid, time: serverTimestamp()
+                        });
+                    } catch (fsErr) { console.warn('Firestore user save failed', fsErr); }
+                    alert('Account created! Welcome, ' + (name || email) + '!');
+                    document.getElementById('signup-modal').classList.remove('show');
+                    e.target.reset();
+                } catch (err) {
+                    alert('Sign up failed: ' + (err.message || err));
+                }
+            });
+        }
+
+        // Expose sign out globally
+        window.firebaseSignOut = async () => { try { await signOut(auth); alert('Signed out'); } catch (e) { console.error(e); } };
+    </script>
 
 </body>
+
 </html>

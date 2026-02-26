@@ -1,0 +1,2722 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin — Chandini Cable Network</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f0f2f5;
+      color: #333
+    }
+
+    /* ── LOGIN PAGE ── */
+    #loginPage {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: #eef1f7
+    }
+
+    .login-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, .12);
+      padding: 40px 36px;
+      width: 420px
+    }
+
+    .login-card .logo {
+      text-align: center;
+      margin-bottom: 24px
+    }
+
+    .login-card .logo h2 {
+      color: #1A3C6E;
+      font-size: 22px;
+      margin-top: 8px
+    }
+
+    .login-card .logo p {
+      color: #888;
+      font-size: 13px
+    }
+
+    .lf-group {
+      margin-bottom: 16px
+    }
+
+    .lf-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 6px
+    }
+
+    .lf-group input {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid #dde1ea;
+      border-radius: 7px;
+      font-size: 14px;
+      outline: none;
+      transition: border .2s
+    }
+
+    .lf-group input:focus {
+      border-color: #1A3C6E
+    }
+
+    .captcha-row {
+      display: flex;
+      gap: 10px;
+      align-items: center
+    }
+
+    #captchaCanvas {
+      border: 1.5px solid #e88;
+      border-radius: 6px;
+      background: #fff8f8;
+      cursor: default
+    }
+
+    #captchaRefresh {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      color: #1A3C6E;
+      padding: 4px
+    }
+
+    #captchaInput {
+      flex: 1;
+      padding: 11px 14px;
+      border: 1.5px solid #dde1ea;
+      border-radius: 7px;
+      font-size: 14px;
+      outline: none;
+      transition: border .2s
+    }
+
+    #captchaInput:focus {
+      border-color: #1A3C6E
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 13px;
+      background: #1565C0;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background .2s
+    }
+
+    .login-btn:hover {
+      background: #0d47a1
+    }
+
+    .login-err {
+      color: #c00;
+      font-size: 13px;
+      margin-top: 8px;
+      display: none;
+      text-align: center
+    }
+
+    /* ── LAYOUT ── */
+    #dashPage {
+      display: none;
+      min-height: 100vh
+    }
+
+    .layout {
+      display: flex;
+      min-height: 100vh
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 220px;
+      background: #1A3C6E;
+      color: #fff;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column
+    }
+
+    .sidebar .sb-logo {
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, .12);
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.3
+    }
+
+    .sb-search {
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, .1)
+    }
+
+    .sb-search input {
+      background: rgba(255, 255, 255, .1);
+      border: none;
+      border-radius: 6px;
+      padding: 7px 10px;
+      color: #fff;
+      width: 100%;
+      font-size: 13px;
+      outline: none
+    }
+
+    .sb-search input::placeholder {
+      color: rgba(255, 255, 255, .5)
+    }
+
+    .sb-search .icon {
+      color: rgba(255, 255, 255, .6);
+      font-size: 14px
+    }
+
+    .sb-nav {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 0
+    }
+
+    .sb-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 13.5px;
+      transition: background .15s;
+      color: rgba(255, 255, 255, .85)
+    }
+
+    .sb-item:hover,
+    .sb-item.active {
+      background: rgba(255, 255, 255, .13);
+      color: #fff
+    }
+
+    .sb-item .label {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .sb-item .arrow {
+      font-size: 10px;
+      opacity: .7
+    }
+
+    /* MAIN */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden
+    }
+
+    .topbar {
+      background: #fff;
+      border-bottom: 1px solid #e0e4ef;
+      padding: 0 24px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .topbar .breadcrumb {
+      font-size: 13px;
+      color: #888
+    }
+
+    .topbar .breadcrumb span {
+      color: #1A3C6E;
+      font-weight: 600
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 14px
+    }
+
+    .topbar-right .user-badge {
+      background: #1A3C6E;
+      color: #fff;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer
+    }
+
+    #logoutBtn2 {
+      background: none;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-size: 13px;
+      cursor: pointer;
+      color: #555
+    }
+
+    #logoutBtn2:hover {
+      background: #f5f5f5
+    }
+
+    /* CONTENT AREA */
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 24px;
+      background: #f0f2f5
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .section-title::before {
+      content: 'ⓘ';
+      color: #1A3C6E
+    }
+
+    /* STAT CARDS GRID */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px
+    }
+
+    .stat-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+      position: relative
+    }
+
+    .stat-card .icon-wrap {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0
+    }
+
+    .stat-card .info .val {
+      font-size: 18px;
+      font-weight: 700;
+      color: #222
+    }
+
+    .stat-card .info .lbl {
+      font-size: 12px;
+      color: #888;
+      margin-top: 2px
+    }
+
+    .stat-card .corner {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 11px;
+      color: #bbb;
+      cursor: pointer
+    }
+
+    /* card colours */
+    .c-blue {
+      background: #EEF4FF
+    }
+
+    .c-blue .icon-wrap {
+      background: #DBEAFE;
+      color: #1E40AF
+    }
+
+    .c-red {
+      background: #FFF5F5
+    }
+
+    .c-red .icon-wrap {
+      background: #FEE2E2;
+      color: #DC2626
+    }
+
+    .c-green {
+      background: #F0FFF4
+    }
+
+    .c-green .icon-wrap {
+      background: #D1FAE5;
+      color: #059669
+    }
+
+    .c-orange {
+      background: #FFFAF0
+    }
+
+    .c-orange .icon-wrap {
+      background: #FEF3C7;
+      color: #D97706
+    }
+
+    .c-purple {
+      background: #FAF5FF
+    }
+
+    .c-purple .icon-wrap {
+      background: #EDE9FE;
+      color: #7C3AED
+    }
+
+    .c-teal {
+      background: #F0FDFA
+    }
+
+    .c-teal .icon-wrap {
+      background: #CCFBF1;
+      color: #0D9488
+    }
+
+    /* USER INFO PANEL */
+    .right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 12px
+    }
+
+    .user-info-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 18px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .06)
+    }
+
+    .user-info-card h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1A3C6E;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .user-info-card .ui-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px
+    }
+
+    .ui-avatar {
+      width: 40px;
+      height: 40px;
+      background: #E0E7FF;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0
+    }
+
+    .ui-detail .op-id {
+      font-size: 12px;
+      color: #555
+    }
+
+    .ui-detail .net {
+      font-size: 11px;
+      color: #888;
+      margin-top: 2px
+    }
+
+    .balance-box {
+      border-top: 1px solid #f0f0f0;
+      padding-top: 12px;
+      margin-top: 4px;
+      text-align: center
+    }
+
+    .balance-box .amount {
+      font-size: 22px;
+      font-weight: 700;
+      color: #222
+    }
+
+    .balance-box .sub {
+      font-size: 11px;
+      color: #888;
+      margin-bottom: 10px
+    }
+
+    .topup-btn {
+      background: #2E7D32;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 6px 22px;
+      font-size: 13px;
+      cursor: pointer;
+      font-weight: 600
+    }
+
+    .balance-box .updated {
+      font-size: 11px;
+      color: #aaa;
+      margin-top: 10px
+    }
+
+    /* TWO-COL LAYOUT for top section */
+    .top-section {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 16px;
+      margin-bottom: 20px
+    }
+
+    ```css .top-left {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px
+    }
+
+    ```
+
+    /* BILLING */
+    .billing-section {
+      margin-bottom: 20px
+    }
+
+    /* BOTTOM ROW */
+    .bottom-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px
+    }
+
+    .bottom-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .06)
+    }
+
+    .bottom-card h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .bottom-card h4::before {
+      content: 'ⓘ';
+      color: #1A3C6E
+    }
+
+    .cust-row {
+      display: flex;
+      gap: 12px
+    }
+
+    .cust-box {
+      flex: 1;
+      border-radius: 8px;
+      padding: 14px;
+      text-align: center
+    }
+
+    .cust-box.active {
+      background: #E8F5E9
+    }
+
+    .cust-box.premium {
+      background: #F3E5F5
+    }
+
+    .cust-box .cv {
+      font-size: 22px;
+      font-weight: 700
+    }
+
+    .cust-box .cl {
+      font-size: 12px;
+      color: #666;
+      margin-top: 4px
+    }
+
+    .cust-box .ci {
+      font-size: 24px;
+      margin-bottom: 6px
+    }
+
+    /* CHART PLACEHOLDER */
+    .chart-area {
+      height: 140px;
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      padding: 10px 0
+    }
+
+    .bar {
+      flex: 1;
+      border-radius: 4px 4px 0 0;
+      min-height: 10px
+    }
+
+    .bar.b1 {
+      background: #1E88E5;
+      height: 80px
+    }
+
+    .bar.b2 {
+      background: #43A047;
+      height: 110px
+    }
+
+    .bar.b3 {
+      background: #FB8C00;
+      height: 55px
+    }
+
+    .bar.b4 {
+      background: #E53935;
+      height: 35px
+    }
+
+    .chart-labels {
+      display: flex;
+      gap: 8px;
+      font-size: 11px;
+      color: #888;
+      margin-top: 6px
+    }
+
+    .chart-labels span {
+      flex: 1;
+      text-align: center
+    }
+
+    /* DONUT PLACEHOLDER */
+    .donut-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      height: 140px
+    }
+
+    .donut {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: conic-gradient(#43A047 0% 30%, #E53935 30% 70%, #FB8C00 70% 100%);
+      position: relative
+    }
+
+    .donut::after {
+      content: '';
+      position: absolute;
+      top: 22px;
+      left: 22px;
+      right: 22px;
+      bottom: 22px;
+      background: #fff;
+      border-radius: 50%
+    }
+
+    .donut-legend {
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px
+    }
+
+    .donut-legend .dl {
+      display: flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .donut-legend .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0
+    }
+
+    /* submissions table (hidden by default) */
+    #subSection {
+      display: none;
+      background: #fff;
+      border-radius: 10px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+      margin-bottom: 20px
+    }
+
+    #subSection h4 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #1A3C6E
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse
+    }
+
+    th,
+    td {
+      padding: 9px 12px;
+      text-align: left;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 13px
+    }
+
+    th {
+      background: #f8f9fb;
+      font-weight: 600;
+      color: #555
+    }
+
+    .tbl-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      justify-content: flex-end
+    }
+
+    .tbl-btn {
+      padding: 7px 16px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: 13px
+    }
+
+    .tbl-btn.primary {
+      background: #1A3C6E;
+      color: #fff
+    }
+
+    .tbl-btn.sec {
+      background: #888;
+      color: #fff
+    }
+
+    /* notification badge on sidebar */
+    .notif-badge {
+      background: #e53935;
+      color: #fff;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 1px 7px;
+      min-width: 18px;
+      text-align: center;
+      display: none;
+    }
+
+    .notif-badge.show {
+      display: inline-block;
+    }
+
+    /* new requests alert banner */
+    .req-banner {
+      display: none;
+      background: #fff3e0;
+      border: 1.5px solid #fb8c00;
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 16px;
+      cursor: pointer;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 2px 8px rgba(251, 140, 0, .12);
+      transition: background .2s;
+    }
+
+    .req-banner:hover {
+      background: #ffe0b2;
+    }
+
+    .req-banner.show {
+      display: flex;
+    }
+
+    .req-banner .req-icon {
+      font-size: 28px;
+    }
+
+    .req-banner .req-text .req-title {
+      font-weight: 700;
+      color: #e65100;
+      font-size: 15px;
+    }
+
+    .req-banner .req-text .req-sub {
+      font-size: 12px;
+      color: #888;
+      margin-top: 2px;
+    }
+
+    .req-banner .req-count {
+      margin-left: auto;
+      background: #e53935;
+      color: #fff;
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    /* ── GENERIC SECTION PAGE ── */
+    .sec-page {
+      display: none;
+    }
+
+    .sec-page.active {
+      display: block;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .page-header h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1A3C6E;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .page-header .ph-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: #1565C0;
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 8px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    .btn-primary:hover {
+      background: #0d47a1;
+    }
+
+    .btn-danger {
+      background: #e53935;
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 8px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-success {
+      background: #2E7D32;
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 8px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-outline {
+      background: #fff;
+      color: #1A3C6E;
+      border: 1.5px solid #1A3C6E;
+      border-radius: 7px;
+      padding: 8px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .search-bar input {
+      flex: 1;
+      padding: 9px 14px;
+      border: 1.5px solid #dde1ea;
+      border-radius: 7px;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .search-bar input:focus {
+      border-color: #1A3C6E;
+    }
+
+    .search-bar select {
+      padding: 9px 12px;
+      border: 1.5px solid #dde1ea;
+      border-radius: 7px;
+      font-size: 13px;
+      outline: none;
+      background: #fff;
+    }
+
+    .data-table-wrap {
+      background: #fff;
+      border-radius: 10px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+      margin-bottom: 20px;
+    }
+
+    .data-table-wrap table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .data-table-wrap th,
+    .data-table-wrap td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 13px;
+      text-align: left;
+    }
+
+    .data-table-wrap th {
+      background: #f4f6fb;
+      font-weight: 700;
+      color: #1A3C6E;
+    }
+
+    .data-table-wrap tr:last-child td {
+      border-bottom: none;
+    }
+
+    .data-table-wrap tr:hover td {
+      background: #f8faff;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .badge-green {
+      background: #E8F5E9;
+      color: #2E7D32;
+    }
+
+    .badge-red {
+      background: #FFEBEE;
+      color: #c62828;
+    }
+
+    .badge-orange {
+      background: #FFF3E0;
+      color: #e65100;
+    }
+
+    .badge-blue {
+      background: #E3F2FD;
+      color: #1565C0;
+    }
+
+    .badge-purple {
+      background: #F3E5F5;
+      color: #7B1FA2;
+    }
+
+    .badge-grey {
+      background: #F5F5F5;
+      color: #555;
+    }
+
+    .mini-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .mini-stat {
+      background: #fff;
+      border-radius: 10px;
+      padding: 14px 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+      text-align: center;
+    }
+
+    .mini-stat .ms-val {
+      font-size: 22px;
+      font-weight: 700;
+      color: #1A3C6E;
+    }
+
+    .mini-stat .ms-lbl {
+      font-size: 11px;
+      color: #888;
+      margin-top: 4px;
+    }
+
+    .row-action {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      padding: 2px 5px;
+      border-radius: 4px;
+      transition: background .15s;
+    }
+
+    .row-action:hover {
+      background: #eef;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ═══════════ LOGIN PAGE ═══════════ -->
+  <div id="loginPage">
+    <div class="login-card">
+      <div class="logo">
+        <div style="font-size:36px">📡</div>
+        <h2>Chandini Cable Network</h2>
+        <p>Admin Portal</p>
+      </div>
+
+      <div class="lf-group">
+        <label>Username</label>
+        <input id="lUser" type="text" placeholder="" autocomplete="username">
+      </div>
+      <div class="lf-group">
+        <label>Password</label>
+        <input id="lPass" type="password" placeholder="" autocomplete="current-password">
+      </div>
+      <div class="lf-group">
+        <label style="display:flex;align-items:center;gap:8px">
+          Captcha Code
+          <button id="captchaRefresh" title="Refresh">&#x21bb;</button>
+        </label>
+        <div class="captcha-row">
+          <canvas id="captchaCanvas" width="140" height="48"></canvas>
+          <input id="captchaInput" type="text" placeholder="Enter Captcha Code">
+        </div>
+      </div>
+      <button class="login-btn" id="doLogin">Login</button>
+      <div class="login-err" id="loginErr">Invalid credentials or captcha. Try again.</div>
+      <div style="text-align:center;margin-top:14px;font-size:12px;color:#aaa">
+        Default: <strong>any username</strong> + password <strong>admin123</strong>
+      </div>
+      <div style="text-align:center;margin-top:8px">
+        <a id="setCredsLink" style="font-size:12px;color:#1A3C6E;cursor:pointer;text-decoration:underline">Set / Change
+          Credentials</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ DASHBOARD PAGE ═══════════ -->
+  <div id="dashPage">
+    <div class="layout">
+
+      <!-- SIDEBAR -->
+      <nav class="sidebar">
+        <div class="sb-logo">📡 Chandini Cable<br><span
+            style="font-size:11px;opacity:.7;font-weight:400">BVKCCE015</span></div>
+        <div class="sb-search">
+          <span class="icon">🔍</span>
+          <input placeholder="Menu Search...">
+        </div>
+        <div class="sb-nav">
+          <div class="sb-item active" id="nav-dashboard" onclick="navigate('dashboard')"><span class="label">🏠
+              Dashboard</span></div>
+          <div class="sb-item" id="nav-das" onclick="navigate('das')"><span class="label">📊 DAS</span><span
+              class="arrow">›</span></div>
+          <div class="sb-item" id="nav-stb" onclick="navigate('stb')"><span class="label">📺 STB</span><span
+              class="arrow">›</span></div>
+          <div class="sb-item" id="nav-customers" onclick="navigate('customers')" style="justify-content:space-between">
+            <span class="label">👥 Customers</span>
+            <span style="display:flex;align-items:center;gap:6px"><span id="custBadge" class="notif-badge">0</span><span
+                class="arrow">›</span></span>
+          </div>
+          <div class="sb-item" id="nav-users" onclick="navigate('users')"><span class="label">👤 Users</span><span
+              class="arrow">›</span></div>
+          <div class="sb-item" id="nav-products" onclick="navigate('products')"><span class="label">📦
+              Products</span><span class="arrow">›</span></div>
+          <div class="sb-item" id="nav-complaints" onclick="navigate('complaints')"><span class="label">📋
+              Complaints</span><span class="arrow">›</span></div>
+          <div class="sb-item" id="nav-reports" onclick="navigate('reports')"><span class="label">📈 Reports</span><span
+              class="arrow">›</span></div>
+          <div class="sb-item" id="nav-billing" onclick="navigate('billing')"><span class="label">💰 Customer Billing
+              Share</span><span class="arrow">›</span></div>
+        </div>
+      </nav>
+
+      <!-- MAIN AREA -->
+      <div class="main">
+        <div class="topbar">
+          <div class="breadcrumb" id="topBreadcrumb">🏠 Dashboard › <span>Dashboard</span></div>
+          <div class="topbar-right">
+            <span id="logoutBtn2" onclick="doLogout()">Logout</span>
+            <div class="user-badge">A</div>
+          </div>
+        </div>
+
+        <div class="content">
+
+          <!-- New Connection Requests Banner -->
+          <div id="reqBanner" class="req-banner" onclick="showSub(true)" title="Click to view all requests">
+            <div class="req-icon">🔔</div>
+            <div class="req-text">
+              <div class="req-title">New Connection Requests!</div>
+              <div class="req-sub">Click to view customer requests — from the main site</div>
+            </div>
+            <div class="req-count" id="reqCount">0</div>
+          </div>
+
+          <!-- Customer Submissions (visible when Customers nav is clicked) -->
+          <div id="subSection">
+            <h4>📋 Customer Form Submissions</h4>
+            <table id="subTable">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Phone</th>
+                  <th>Message</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody id="subBody"></tbody>
+            </table>
+            <div class="tbl-actions">
+              <button class="tbl-btn sec" onclick="clearSubs()">Clear All</button>
+              <button class="tbl-btn primary" onclick="exportSubs()">Export JSON</button>
+            </div>
+          </div>
+
+          <!-- TOP SECTION: STB Cards + User Info -->
+          <div id="mainDash">
+            <div class="top-section">
+              <div class="top-left">
+                <div class="section-title">STB Information</div>
+                <div class="cards-grid">
+                  <div class="stat-card c-blue">
+                    <div class="icon-wrap">👥</div>
+                    <div class="info">
+                      <div class="val">2,221</div>
+                      <div class="lbl">Assigned STBs</div>
+                    </div>
+                    <div class="corner">ⓘ</div>
+                  </div>
+                  <div class="stat-card c-red">
+                    <div class="icon-wrap">🚫</div>
+                    <div class="info">
+                      <div class="val">1,567</div>
+                      <div class="lbl">Deactive STBs</div>
+                    </div>
+                    <div class="corner">ⓘ</div>
+                  </div>
+                  <div class="stat-card c-blue">
+                    <div class="icon-wrap">👤</div>
+                    <div class="info">
+                      <div class="val" id="totalCust">2,221</div>
+                      <div class="lbl">Total Customers</div>
+                    </div>
+                    <div class="corner">↔ ⓘ</div>
+                  </div>
+
+                  <div class="stat-card c-teal">
+                    <div class="icon-wrap">📺</div>
+                    <div class="info">
+                      <div class="val">2,222</div>
+                      <div class="lbl">Total STBs</div>
+                    </div>
+                    <div class="corner">ⓘ</div>
+                  </div>
+                  <div class="stat-card c-green">
+                    <div class="icon-wrap">✅</div>
+                    <div class="info">
+                      <div class="val">655</div>
+                      <div class="lbl">Active STBs</div>
+                    </div>
+                    <div class="corner">ⓘ</div>
+                  </div>
+                  <div class="stat-card c-orange">
+                    <div class="icon-wrap">⏸</div>
+                    <div class="info">
+                      <div class="val">1,566</div>
+                      <div class="lbl">Assigned Inactive STBs</div>
+                    </div>
+                    <div class="corner">ⓘ</div>
+                  </div>
+
+                  <div class="stat-card c-purple">
+                    <div class="icon-wrap">📦</div>
+                    <div class="info">
+                      <div class="val">1</div>
+                      <div class="lbl">Un Assigned STBs</div>
+                    </div>
+                    <div class="corner">ⓘ</div>
+                  </div>
+                  <div class="stat-card c-red">
+                    <div class="icon-wrap">👥</div>
+                    <div class="info">
+                      <div class="val" id="inactiveCust">1,566</div>
+                      <div class="lbl">Total Inactive Customers</div>
+                    </div>
+                    <div class="corner">↔ ⓘ</div>
+                  </div>
+                  <div class="stat-card c-green">
+                    <div class="icon-wrap">👥</div>
+                    <div class="info">
+                      <div class="val" id="activeCustCard">655</div>
+                      <div class="lbl">Total Active Customers</div>
+                    </div>
+                    <div class="corner">↔ ⓘ</div>
+                  </div>
+                </div>
+                <div class="stat-card c-orange" style="width:calc(33.3% - 8px);margin-bottom:0">
+                  <div class="icon-wrap">⏰</div>
+                  <div class="info">
+                    <div class="val">0</div>
+                    <div class="lbl">Total Expiry Services</div>
+                  </div>
+                  <div class="corner">↔ ⓘ</div>
+                </div>
+              </div>
+
+              <!-- USER INFO -->
+              <div class="right-col">
+                <div class="user-info-card">
+                  <h4>ⓘ User Information</h4>
+                  <div class="ui-row">
+                    <div class="ui-avatar">👤</div>
+                    <div class="ui-detail">
+                      <div class="op-id"><strong>Operator ID :</strong> BVKCCE015</div>
+                      <div class="net">Network : 6015 CHANDHINI CABLE NETWORKS</div>
+                    </div>
+                  </div>
+                  <div class="balance-box">
+                    <div class="amount">INR 46.70</div>
+                    <div class="sub">Available Balance</div>
+                    <button class="topup-btn">TOPUP</button>
+                    <div class="updated">Last Balance Update<br>26-02-2026 09:29:10</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- BILLING INFORMATION -->
+            <div class="billing-section">
+              <div class="section-title">Billing Information</div>
+              <div class="cards-grid">
+                <div class="stat-card c-blue" style="grid-column:span 1">
+                  <div class="icon-wrap">💵</div>
+                  <div class="info">
+                    <div class="val">1,89,486</div>
+                    <div class="lbl">Current Month Collection</div>
+                  </div>
+                  <div class="corner">ⓘ</div>
+                </div>
+                <div class="stat-card c-red">
+                  <div class="icon-wrap">🚫</div>
+                  <div class="info">
+                    <div class="val">53</div>
+                    <div class="lbl">Billed Deactive STB</div>
+                  </div>
+                  <div class="corner">↔ ⓘ</div>
+                </div>
+                <div class="stat-card c-teal">
+                  <div class="icon-wrap">🔵</div>
+                  <div class="info">
+                    <div class="val">1,09,107</div>
+                    <div class="lbl">Current Month MSO Share</div>
+                  </div>
+                  <div class="corner">ⓘ</div>
+                </div>
+
+                <div class="stat-card c-purple">
+                  <div class="icon-wrap">📋</div>
+                  <div class="info">
+                    <div class="val">1,911</div>
+                    <div class="lbl">Current Month Pending MSO Share</div>
+                  </div>
+                  <div class="corner">ⓘ</div>
+                </div>
+                <div class="stat-card c-green">
+                  <div class="icon-wrap">✅</div>
+                  <div class="info">
+                    <div class="val">0</div>
+                    <div class="lbl">Paid MSO Share</div>
+                  </div>
+                  <div class="corner">ⓘ</div>
+                </div>
+                <div class="stat-card c-orange">
+                  <div class="icon-wrap">⚠️</div>
+                  <div class="info">
+                    <div class="val">0</div>
+                    <div class="lbl">Unpaid MSO Share</div>
+                  </div>
+                  <div class="corner">ⓘ</div>
+                </div>
+
+                <div class="stat-card c-red">
+                  <div class="icon-wrap">👤</div>
+                  <div class="info">
+                    <div class="val">33</div>
+                    <div class="lbl">Current Month Unpaid Customers</div>
+                  </div>
+                  <div class="corner">ⓘ</div>
+                </div>
+                <div class="stat-card c-green">
+                  <div class="icon-wrap">👥</div>
+                  <div class="info">
+                    <div class="val">673</div>
+                    <div class="lbl">Current Month Paid Customers</div>
+                  </div>
+                  <div class="corner">ⓘ</div>
+                </div>
+                <div class="stat-card c-blue">
+                  <div class="icon-wrap">🧾</div>
+                  <div class="info">
+                    <div class="val">1,89,964</div>
+                    <div class="lbl">Current Month Billing</div>
+                  </div>
+                  <div class="corner">ⓘ</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- BOTTOM ROW: Customer Info, Group Wise Counts, STB Chart -->
+            <div class="bottom-row">
+              <div class="bottom-card">
+                <h4>Customer Information</h4>
+                <div class="cust-row">
+                  <div class="cust-box active">
+                    <div class="ci">👥</div>
+                    <div class="cv" style="color:#2E7D32">653</div>
+                    <div class="cl">Active Customers</div>
+                  </div>
+                  <div class="cust-box premium">
+                    <div class="ci">⭐</div>
+                    <div class="cv" style="color:#7B1FA2">0</div>
+                    <div class="cl">Premium Customers</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bottom-card">
+                <h4>Group Wise Counts</h4>
+                <div class="chart-area">
+                  <div class="bar b1" style="height:50px"></div>
+                  <div class="bar b2" style="height:110px"></div>
+                  <div class="bar b3" style="height:30px"></div>
+                  <div class="bar b4" style="height:70px"></div>
+                </div>
+                <div class="chart-labels">
+                  <span>Group A</span><span>Group B</span><span>Group C</span><span>Group D</span>
+                </div>
+              </div>
+
+              <div class="bottom-card">
+                <h4>STB Information <select
+                    style="font-size:11px;border:1px solid #ddd;border-radius:4px;padding:2px 6px;margin-left:8px">
+                    <option>All</option>
+                  </select></h4>
+                <div class="donut-wrap">
+                  <div class="donut"></div>
+                  <div class="donut-legend">
+                    <div class="dl">
+                      <div class="dot" style="background:#43A047"></div> Active: 655
+                    </div>
+                    <div class="dl">
+                      <div class="dot" style="background:#E53935"></div> Inactive: 1,566
+                    </div>
+                    <div class="dl">
+                      <div class="dot" style="background:#FB8C00"></div> Unassigned: 1
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div><!-- end mainDash -->
+
+
+          <!-- ═══════════ DAS SECTION ═══════════ -->
+          <div id="sec-das" class="sec-page">
+            <div class="page-header">
+              <h2>📊 DAS — Digital Addressable System</h2>
+              <div class="ph-actions">
+                <button class="btn-outline" onclick="alert('Refreshing DAS data...')">↻ Refresh</button>
+                <button class="btn-primary" onclick="alert('Export initiated')">⬇ Export</button>
+              </div>
+            </div>
+            <div class="mini-stats">
+              <div class="mini-stat">
+                <div class="ms-val">2,222</div>
+                <div class="ms-lbl">Total STBs Mapped</div>
+              </div>
+              <div class="mini-stat">
+                <div class="ms-val">655</div>
+                <div class="ms-lbl">Active Subscribers</div>
+              </div>
+              <div class="mini-stat">
+                <div class="ms-val">12</div>
+                <div class="ms-lbl">Bouquets Active</div>
+              </div>
+              <div class="mini-stat">
+                <div class="ms-val">98.2%</div>
+                <div class="ms-lbl">System Uptime</div>
+              </div>
+            </div>
+            <div class="data-table-wrap">
+              <div class="search-bar">
+                <input placeholder="Search bouquet or channel...">
+                <select>
+                  <option>All Status</option>
+                  <option>Active</option>
+                  <option>Inactive</option>
+                </select>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Bouquet Name</th>
+                    <th>Channels</th>
+                    <th>Subscribers</th>
+                    <th>Price (₹)</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>Basic SD Pack</td>
+                    <td>75</td>
+                    <td>421</td>
+                    <td>199</td>
+                    <td><span class="badge badge-green">Active</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">👁</button></td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>Value HD Pack</td>
+                    <td>120</td>
+                    <td>189</td>
+                    <td>399</td>
+                    <td><span class="badge badge-green">Active</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">👁</button></td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td>Sports Booster</td>
+                    <td>15</td>
+                    <td>44</td>
+                    <td>99</td>
+                    <td><span class="badge badge-green">Active</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">👁</button></td>
+                  </tr>
+                  <tr>
+                    <td>4</td>
+                    <td>Films & OTT</td>
+                    <td>20</td>
+                    <td>31</td>
+                    <td>149</td>
+                    <td><span class="badge badge-orange">Pending</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">👁</button></td>
+                  </tr>
+                  <tr>
+                    <td>5</td>
+                    <td>South Mega Pack</td>
+                    <td>200</td>
+                    <td>0</td>
+                    <td>549</td>
+                    <td><span class="badge badge-red">Inactive</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">👁</button></td>
+                  </tr>
+                  <tr>
+                    <td>6</td>
+                    <td>Kids Pack</td>
+                    <td>18</td>
+                    <td>12</td>
+                    <td>79</td>
+                    <td><span class="badge badge-green">Active</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">👁</button></td>
+                  </tr>
+                  <tr>
+                    <td>7</td>
+                    <td>News Pack</td>
+                    <td>30</td>
+                    <td>67</td>
+                    <td>49</td>
+                    <td><span class="badge badge-green">Active</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">👁</button></td>
+                  </tr>
+                  <tr>
+                    <td>8</td>
+                    <td>Devotional Pack</td>
+                    <td>10</td>
+                    <td>29</td>
+                    <td>39</td>
+                    <td><span class="badge badge-green">Active</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">👁</button></td>
+                  </tr>
+                  <tr>
+                    <td>9</td>
+                    <td>Mega Combo HD</td>
+                    <td>350</td>
+                    <td>0</td>
+                    <td>799</td>
+                    <td><span class="badge badge-red">Inactive</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">👁</button></td>
+                  </tr>
+                  <tr>
+                    <td>10</td>
+                    <td>Economy Pack</td>
+                    <td>50</td>
+                    <td>201</td>
+                    <td>149</td>
+                    <td><span class="badge badge-green">Active</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">👁</button></td>
+                  </tr>
+                  <tr>
+                    <td>11</td>
+                    <td>Telangana Special</td>
+                    <td>60</td>
+                    <td>88</td>
+                    <td>229</td>
+                    <td><span class="badge badge-green">Active</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">👁</button></td>
+                  </tr>
+                  <tr>
+                    <td>12</td>
+                    <td>Premium 4K</td>
+                    <td>25</td>
+                    <td>5</td>
+                    <td>999</td>
+                    <td><span class="badge badge-blue">Trial</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">👁</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+
+          <!-- ═══════════ STB SECTION ═══════════ -->
+          <div id="sec-stb" class="sec-page">
+            <div class="page-header">
+              <h2>📺 STB — Set Top Box Management</h2>
+              <div class="ph-actions">
+                <button class="btn-success" onclick="alert('Add STB form opens here')">+ Add STB</button>
+                <button class="btn-primary" onclick="alert('Export initiated')">⬇ Export</button>
+              </div>
+            </div>
+            <div class="mini-stats">
+              <div class="mini-stat">
+                <div class="ms-val">2,222</div>
+                <div class="ms-lbl">Total STBs</div>
+              </div>
+              <div class="mini-stat">
+                <div class="ms-val">655</div>
+                <div class="ms-lbl">Active</div>
+              </div>
+              <div class="mini-stat">
+                <div class="ms-val">1,566</div>
+                <div class="ms-lbl">Inactive</div>
+              </div>
+              <div class="mini-stat">
+                <div class="ms-val">1</div>
+                <div class="ms-lbl">Unassigned</div>
+              </div>
+            </div>
+            <div class="data-table-wrap">
+              <div class="search-bar">
+                <input placeholder="Search STB number, customer name...">
+                <select>
+                  <option>All Status</option>
+                  <option>Active</option>
+                  <option>Inactive</option>
+                  <option>Unassigned</option>
+                </select>
+                <select>
+                  <option>All Locations</option>
+                  <option>Zone A</option>
+                  <option>Zone B</option>
+                  <option>Zone C</option>
+                </select>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>STB Number</th>
+                    <th>Card No.</th>
+                    <th>Customer</th>
+                    <th>Plan</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>STB-001-2241</td>
+                    <td>CRD-88210</td>
+                    <td>Ravi Kumar</td>
+                    <td>Basic SD</td>
+                    <td>Zone A</td>
+                    <td><span class="badge badge-green">Active</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">🔁</button></td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>STB-002-3310</td>
+                    <td>CRD-44512</td>
+                    <td>Sunita Reddy</td>
+                    <td>Value HD</td>
+                    <td>Zone B</td>
+                    <td><span class="badge badge-green">Active</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">🔁</button></td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td>STB-003-5521</td>
+                    <td>CRD-72901</td>
+                    <td>Mahesh Yadav</td>
+                    <td>Economy</td>
+                    <td>Zone A</td>
+                    <td><span class="badge badge-red">Inactive</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">🔁</button></td>
+                  </tr>
+                  <tr>
+                    <td>4</td>
+                    <td>STB-004-1109</td>
+                    <td>CRD-33008</td>
+                    <td>Anita Sharma</td>
+                    <td>Basic SD</td>
+                    <td>Zone C</td>
+                    <td><span class="badge badge-green">Active</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">🔁</button></td>
+                  </tr>
+                  <tr>
+                    <td>5</td>
+                    <td>STB-005-8834</td>
+                    <td>CRD-91100</td>
+                    <td>—</td>
+                    <td>—</td>
+                    <td>—</td>
+                    <td><span class="badge badge-grey">Unassigned</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">🔁</button></td>
+                  </tr>
+                  <tr>
+                    <td>6</td>
+                    <td>STB-006-2200</td>
+                    <td>CRD-55341</td>
+                    <td>Priya Singh</td>
+                    <td>Sports</td>
+                    <td>Zone B</td>
+                    <td><span class="badge badge-red">Inactive</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">🔁</button></td>
+                  </tr>
+                  <tr>
+                    <td>7</td>
+                    <td>STB-007-7741</td>
+                    <td>CRD-66780</td>
+                    <td>Kiran Babu</td>
+                    <td>Value HD</td>
+                    <td>Zone A</td>
+                    <td><span class="badge badge-green">Active</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">🔁</button></td>
+                  </tr>
+                  <tr>
+                    <td>8</td>
+                    <td>STB-008-4412</td>
+                    <td>CRD-12450</td>
+                    <td>Lakshmi Devi</td>
+                    <td>Economy</td>
+                    <td>Zone C</td>
+                    <td><span class="badge badge-red">Inactive</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">🔁</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+
+          <!-- ═══════════ CUSTOMERS SECTION ═══════════ -->
+          <!-- Note: existing subSection is already rendered above for customers -->
+
+
+          <!-- ═══════════ USERS SECTION ═══════════ -->
+          <div id="sec-users" class="sec-page">
+            <div class="page-header">
+              <h2>👤 User Management</h2>
+              <div class="ph-actions">
+                <button class="btn-success" onclick="alert('Add User form opens here')">+ Add User</button>
+              </div>
+            </div>
+            <div class="mini-stats">
+              <div class="mini-stat">
+                <div class="ms-val">4</div>
+                <div class="ms-lbl">Total Users</div>
+              </div>
+              <div class="mini-stat">
+                <div class="ms-val">3</div>
+                <div class="ms-lbl">Active</div>
+              </div>
+              <div class="mini-stat">
+                <div class="ms-val">1</div>
+                <div class="ms-lbl">Inactive</div>
+              </div>
+              <div class="mini-stat">
+                <div class="ms-val">2</div>
+                <div class="ms-lbl">Roles</div>
+              </div>
+            </div>
+            <div class="data-table-wrap">
+              <div class="search-bar">
+                <input placeholder="Search by name or username...">
+                <select>
+                  <option>All Roles</option>
+                  <option>Super Admin</option>
+                  <option>Operator</option>
+                  <option>Read Only</option>
+                </select>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Role</th>
+                    <th>Mobile</th>
+                    <th>Last Login</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>Admin</td>
+                    <td>admin</td>
+                    <td><span class="badge badge-purple">Super Admin</span></td>
+                    <td>9876543210</td>
+                    <td>26-02-2026 09:30</td>
+                    <td><span class="badge badge-green">Active</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">🔑</button></td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>Chandini Ops</td>
+                    <td>chandini_ops</td>
+                    <td><span class="badge badge-blue">Operator</span></td>
+                    <td>9123456780</td>
+                    <td>25-02-2026 14:10</td>
+                    <td><span class="badge badge-green">Active</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">🔑</button></td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td>Billing Staff</td>
+                    <td>billing01</td>
+                    <td><span class="badge badge-orange">Read Only</span></td>
+                    <td>9988776655</td>
+                    <td>24-02-2026 11:00</td>
+                    <td><span class="badge badge-green">Active</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">🔑</button></td>
+                  </tr>
+                  <tr>
+                    <td>4</td>
+                    <td>Old Operator</td>
+                    <td>ops_old</td>
+                    <td><span class="badge badge-blue">Operator</span></td>
+                    <td>9000000001</td>
+                    <td>01-01-2025 08:00</td>
+                    <td><span class="badge badge-red">Inactive</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">🔑</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+
+          <!-- ═══════════ PRODUCTS SECTION ═══════════ -->
+          <div id="sec-products" class="sec-page">
+            <div class="page-header">
+              <h2>📦 Products & Plans</h2>
+              <div class="ph-actions">
+                <button class="btn-success" onclick="alert('Add Plan form opens here')">+ Add Plan</button>
+                <button class="btn-primary" onclick="alert('Export initiated')">⬇ Export</button>
+              </div>
+            </div>
+            <div class="mini-stats">
+              <div class="mini-stat">
+                <div class="ms-val">18</div>
+                <div class="ms-lbl">Total Plans</div>
+              </div>
+              <div class="mini-stat">
+                <div class="ms-val">14</div>
+                <div class="ms-lbl">Active Plans</div>
+              </div>
+              <div class="mini-stat">
+                <div class="ms-val">4</div>
+                <div class="ms-lbl">Inactive Plans</div>
+              </div>
+              <div class="mini-stat">
+                <div class="ms-val">₹149</div>
+                <div class="ms-lbl">Min. Plan Price</div>
+              </div>
+            </div>
+            <div class="data-table-wrap">
+              <div class="search-bar">
+                <input placeholder="Search by plan name...">
+                <select>
+                  <option>All Types</option>
+                  <option>SD</option>
+                  <option>HD</option>
+                  <option>Add-on</option>
+                </select>
+                <select>
+                  <option>All Status</option>
+                  <option>Active</option>
+                  <option>Inactive</option>
+                </select>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Plan Name</th>
+                    <th>Type</th>
+                    <th>Channels</th>
+                    <th>Price (₹/mo)</th>
+                    <th>Subscribers</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>Basic SD</td>
+                    <td><span class="badge badge-grey">SD</span></td>
+                    <td>75</td>
+                    <td>199</td>
+                    <td>421</td>
+                    <td><span class="badge badge-green">Active</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">🗑</button></td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>Economy Pack</td>
+                    <td><span class="badge badge-grey">SD</span></td>
+                    <td>50</td>
+                    <td>149</td>
+                    <td>201</td>
+                    <td><span class="badge badge-green">Active</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">🗑</button></td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td>Value HD</td>
+                    <td><span class="badge badge-blue">HD</span></td>
+                    <td>120</td>
+                    <td>399</td>
+                    <td>189</td>
+                    <td><span class="badge badge-green">Active</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">🗑</button></td>
+                  </tr>
+                  <tr>
+                    <td>4</td>
+                    <td>Sports Booster</td>
+                    <td><span class="badge badge-orange">Add-on</span></td>
+                    <td>15</td>
+                    <td>99</td>
+                    <td>44</td>
+                    <td><span class="badge badge-green">Active</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">🗑</button></td>
+                  </tr>
+                  <tr>
+                    <td>5</td>
+                    <td>Films & OTT</td>
+                    <td><span class="badge badge-orange">Add-on</span></td>
+                    <td>20</td>
+                    <td>149</td>
+                    <td>31</td>
+                    <td><span class="badge badge-orange">Pending</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">🗑</button></td>
+                  </tr>
+                  <tr>
+                    <td>6</td>
+                    <td>Kids Pack</td>
+                    <td><span class="badge badge-orange">Add-on</span></td>
+                    <td>18</td>
+                    <td>79</td>
+                    <td>12</td>
+                    <td><span class="badge badge-green">Active</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">🗑</button></td>
+                  </tr>
+                  <tr>
+                    <td>7</td>
+                    <td>News Pack</td>
+                    <td><span class="badge badge-orange">Add-on</span></td>
+                    <td>30</td>
+                    <td>49</td>
+                    <td>67</td>
+                    <td><span class="badge badge-green">Active</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">🗑</button></td>
+                  </tr>
+                  <tr>
+                    <td>8</td>
+                    <td>South Mega Pack</td>
+                    <td><span class="badge badge-blue">HD</span></td>
+                    <td>200</td>
+                    <td>549</td>
+                    <td>0</td>
+                    <td><span class="badge badge-red">Inactive</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">🗑</button></td>
+                  </tr>
+                  <tr>
+                    <td>9</td>
+                    <td>Devotional Pack</td>
+                    <td><span class="badge badge-orange">Add-on</span></td>
+                    <td>10</td>
+                    <td>39</td>
+                    <td>29</td>
+                    <td><span class="badge badge-green">Active</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">🗑</button></td>
+                  </tr>
+                  <tr>
+                    <td>10</td>
+                    <td>Telangana Special</td>
+                    <td><span class="badge badge-grey">SD</span></td>
+                    <td>60</td>
+                    <td>229</td>
+                    <td>88</td>
+                    <td><span class="badge badge-green">Active</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">🗑</button></td>
+                  </tr>
+                  <tr>
+                    <td>11</td>
+                    <td>Premium 4K</td>
+                    <td><span class="badge badge-purple">4K</span></td>
+                    <td>25</td>
+                    <td>999</td>
+                    <td>5</td>
+                    <td><span class="badge badge-blue">Trial</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">🗑</button></td>
+                  </tr>
+                  <tr>
+                    <td>12</td>
+                    <td>Mega Combo HD</td>
+                    <td><span class="badge badge-blue">HD</span></td>
+                    <td>350</td>
+                    <td>799</td>
+                    <td>0</td>
+                    <td><span class="badge badge-red">Inactive</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">🗑</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+
+          <!-- ═══════════ COMPLAINTS SECTION ═══════════ -->
+          <div id="sec-complaints" class="sec-page">
+            <div class="page-header">
+              <h2>📋 Complaints</h2>
+              <div class="ph-actions">
+                <button class="btn-success" onclick="alert('Register new complaint')">+ New Complaint</button>
+                <button class="btn-primary" onclick="alert('Export initiated')">⬇ Export</button>
+              </div>
+            </div>
+            <div class="mini-stats">
+              <div class="mini-stat">
+                <div class="ms-val">24</div>
+                <div class="ms-lbl">Total Complaints</div>
+              </div>
+              <div class="mini-stat">
+                <div class="ms-val">8</div>
+                <div class="ms-lbl">Open</div>
+              </div>
+              <div class="mini-stat">
+                <div class="ms-val">14</div>
+                <div class="ms-lbl">Resolved</div>
+              </div>
+              <div class="mini-stat">
+                <div class="ms-val">2</div>
+                <div class="ms-lbl">Escalated</div>
+              </div>
+            </div>
+            <div class="data-table-wrap">
+              <div class="search-bar">
+                <input placeholder="Search by customer or complaint ID...">
+                <select>
+                  <option>All Status</option>
+                  <option>Open</option>
+                  <option>In Progress</option>
+                  <option>Resolved</option>
+                  <option>Escalated</option>
+                </select>
+                <select>
+                  <option>All Types</option>
+                  <option>No Signal</option>
+                  <option>Billing</option>
+                  <option>STB Issue</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Customer</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Raised On</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>CMP-001</td>
+                    <td>Ravi Kumar</td>
+                    <td>No Signal</td>
+                    <td>No signal since yesterday evening</td>
+                    <td>25-02-2026</td>
+                    <td><span class="badge badge-red">Open</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">✅</button></td>
+                  </tr>
+                  <tr>
+                    <td>CMP-002</td>
+                    <td>Sunita Reddy</td>
+                    <td>Billing</td>
+                    <td>Overcharged for Feb month</td>
+                    <td>24-02-2026</td>
+                    <td><span class="badge badge-orange">In Progress</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">✅</button></td>
+                  </tr>
+                  <tr>
+                    <td>CMP-003</td>
+                    <td>Mahesh Yadav</td>
+                    <td>STB Issue</td>
+                    <td>STB not booting up</td>
+                    <td>23-02-2026</td>
+                    <td><span class="badge badge-green">Resolved</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">👁</button></td>
+                  </tr>
+                  <tr>
+                    <td>CMP-004</td>
+                    <td>Anita Sharma</td>
+                    <td>No Signal</td>
+                    <td>Channels freezing intermittently</td>
+                    <td>22-02-2026</td>
+                    <td><span class="badge badge-red">Open</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">✅</button></td>
+                  </tr>
+                  <tr>
+                    <td>CMP-005</td>
+                    <td>Kiran Babu</td>
+                    <td>Other</td>
+                    <td>Remote not working</td>
+                    <td>21-02-2026</td>
+                    <td><span class="badge badge-green">Resolved</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">👁</button></td>
+                  </tr>
+                  <tr>
+                    <td>CMP-006</td>
+                    <td>Priya Singh</td>
+                    <td>Billing</td>
+                    <td>Subscription not renewed despite payment</td>
+                    <td>20-02-2026</td>
+                    <td><span class="badge badge-purple">Escalated</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">✅</button></td>
+                  </tr>
+                  <tr>
+                    <td>CMP-007</td>
+                    <td>Lakshmi Devi</td>
+                    <td>No Signal</td>
+                    <td>Complete blackout on all channels</td>
+                    <td>20-02-2026</td>
+                    <td><span class="badge badge-purple">Escalated</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">✅</button></td>
+                  </tr>
+                  <tr>
+                    <td>CMP-008</td>
+                    <td>Venkat Rao</td>
+                    <td>STB Issue</td>
+                    <td>Smart card not reading</td>
+                    <td>19-02-2026</td>
+                    <td><span class="badge badge-green">Resolved</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">👁</button></td>
+                  </tr>
+                  <tr>
+                    <td>CMP-009</td>
+                    <td>Nageswara Rao</td>
+                    <td>No Signal</td>
+                    <td>Signal weak after rain</td>
+                    <td>18-02-2026</td>
+                    <td><span class="badge badge-red">Open</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">✅</button></td>
+                  </tr>
+                  <tr>
+                    <td>CMP-010</td>
+                    <td>Savitha Kumari</td>
+                    <td>Billing</td>
+                    <td>Want itemized bill copy</td>
+                    <td>17-02-2026</td>
+                    <td><span class="badge badge-green">Resolved</span></td>
+                    <td><button class="row-action">✏️</button><button class="row-action">👁</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+
+          <!-- ═══════════ REPORTS SECTION ═══════════ -->
+          <div id="sec-reports" class="sec-page">
+            <div class="page-header">
+              <h2>📈 Reports</h2>
+              <div class="ph-actions">
+                <select
+                  style="padding:8px 14px;border:1.5px solid #dde1ea;border-radius:7px;font-size:13px;outline:none">
+                  <option>February 2026</option>
+                  <option>January 2026</option>
+                  <option>December 2025</option>
+                </select>
+                <button class="btn-primary" onclick="alert('Generating report PDF...')">⬇ Download PDF</button>
+              </div>
+            </div>
+            <div class="mini-stats">
+              <div class="mini-stat">
+                <div class="ms-val">₹1,89,486</div>
+                <div class="ms-lbl">Total Collection</div>
+              </div>
+              <div class="mini-stat">
+                <div class="ms-val">673</div>
+                <div class="ms-lbl">Paid Customers</div>
+              </div>
+              <div class="mini-stat">
+                <div class="ms-val">33</div>
+                <div class="ms-lbl">Unpaid Customers</div>
+              </div>
+              <div class="mini-stat">
+                <div class="ms-val">₹1,09,107</div>
+                <div class="ms-lbl">MSO Share</div>
+              </div>
+            </div>
+            <div class="data-table-wrap">
+              <h4 style="font-size:14px;font-weight:700;color:#1A3C6E;margin-bottom:14px">📅 Monthly Collection Summary
+              </h4>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Month</th>
+                    <th>Total Bills</th>
+                    <th>Collected (₹)</th>
+                    <th>Paid</th>
+                    <th>Unpaid</th>
+                    <th>MSO Share (₹)</th>
+                    <th>Pending MSO (₹)</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Feb 2026</td>
+                    <td>706</td>
+                    <td>1,89,486</td>
+                    <td>673</td>
+                    <td>33</td>
+                    <td>1,09,107</td>
+                    <td>1,911</td>
+                    <td><span class="badge badge-orange">In Progress</span></td>
+                  </tr>
+                  <tr>
+                    <td>Jan 2026</td>
+                    <td>698</td>
+                    <td>1,85,240</td>
+                    <td>661</td>
+                    <td>37</td>
+                    <td>1,06,887</td>
+                    <td>0</td>
+                    <td><span class="badge badge-green">Settled</span></td>
+                  </tr>
+                  <tr>
+                    <td>Dec 2025</td>
+                    <td>705</td>
+                    <td>1,91,350</td>
+                    <td>669</td>
+                    <td>36</td>
+                    <td>1,10,226</td>
+                    <td>0</td>
+                    <td><span class="badge badge-green">Settled</span></td>
+                  </tr>
+                  <tr>
+                    <td>Nov 2025</td>
+                    <td>700</td>
+                    <td>1,80,190</td>
+                    <td>645</td>
+                    <td>55</td>
+                    <td>1,03,909</td>
+                    <td>0</td>
+                    <td><span class="badge badge-green">Settled</span></td>
+                  </tr>
+                  <tr>
+                    <td>Oct 2025</td>
+                    <td>695</td>
+                    <td>1,78,430</td>
+                    <td>638</td>
+                    <td>57</td>
+                    <td>1,02,797</td>
+                    <td>0</td>
+                    <td><span class="badge badge-green">Settled</span></td>
+                  </tr>
+                  <tr>
+                    <td>Sep 2025</td>
+                    <td>690</td>
+                    <td>1,77,200</td>
+                    <td>630</td>
+                    <td>60</td>
+                    <td>1,02,090</td>
+                    <td>0</td>
+                    <td><span class="badge badge-green">Settled</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="data-table-wrap">
+              <h4 style="font-size:14px;font-weight:700;color:#1A3C6E;margin-bottom:14px">📊 Plan-wise Revenue (Feb
+                2026)</h4>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Plan</th>
+                    <th>Subscribers</th>
+                    <th>Rate (₹)</th>
+                    <th>Revenue (₹)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Basic SD</td>
+                    <td>421</td>
+                    <td>199</td>
+                    <td>83,779</td>
+                  </tr>
+                  <tr>
+                    <td>Value HD</td>
+                    <td>189</td>
+                    <td>399</td>
+                    <td>75,411</td>
+                  </tr>
+                  <tr>
+                    <td>Economy Pack</td>
+                    <td>201</td>
+                    <td>149</td>
+                    <td>29,949</td>
+                  </tr>
+                  <tr>
+                    <td>Others</td>
+                    <td>—</td>
+                    <td>—</td>
+                    <td>347</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+
+          <!-- ═══════════ CUSTOMER BILLING SHARE SECTION ═══════════ -->
+          <div id="sec-billing" class="sec-page">
+            <div class="page-header">
+              <h2>💰 Customer Billing Share</h2>
+              <div class="ph-actions">
+                <button class="btn-outline" onclick="alert('Generating statement...')">📄 Statement</button>
+                <button class="btn-primary" onclick="alert('Export initiated')">⬇ Export</button>
+              </div>
+            </div>
+            <div class="mini-stats">
+              <div class="mini-stat">
+                <div class="ms-val">₹1,89,964</div>
+                <div class="ms-lbl">Current Month Billing</div>
+              </div>
+              <div class="mini-stat">
+                <div class="ms-val">₹1,09,107</div>
+                <div class="ms-lbl">MSO Share</div>
+              </div>
+              <div class="mini-stat">
+                <div class="ms-val">₹80,857</div>
+                <div class="ms-lbl">Operator Share</div>
+              </div>
+              <div class="mini-stat">
+                <div class="ms-val">₹1,911</div>
+                <div class="ms-lbl">Pending Settlement</div>
+              </div>
+            </div>
+            <div class="data-table-wrap">
+              <h4 style="font-size:14px;font-weight:700;color:#1A3C6E;margin-bottom:14px">💳 Subscriber Billing Details
+                (Feb 2026)</h4>
+              <div class="search-bar">
+                <input placeholder="Search by customer name or ID...">
+                <select>
+                  <option>All Plans</option>
+                  <option>Basic SD</option>
+                  <option>Value HD</option>
+                  <option>Economy</option>
+                </select>
+                <select>
+                  <option>All Status</option>
+                  <option>Paid</option>
+                  <option>Unpaid</option>
+                </select>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Customer ID</th>
+                    <th>Name</th>
+                    <th>Plan</th>
+                    <th>Bill (₹)</th>
+                    <th>MSO (₹)</th>
+                    <th>Opr Share (₹)</th>
+                    <th>Payment</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>CUST-00441</td>
+                    <td>Ravi Kumar</td>
+                    <td>Basic SD</td>
+                    <td>199</td>
+                    <td>115</td>
+                    <td>84</td>
+                    <td>05-02-2026</td>
+                    <td><span class="badge badge-green">Paid</span></td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>CUST-00442</td>
+                    <td>Sunita Reddy</td>
+                    <td>Value HD</td>
+                    <td>399</td>
+                    <td>230</td>
+                    <td>169</td>
+                    <td>07-02-2026</td>
+                    <td><span class="badge badge-green">Paid</span></td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td>CUST-00443</td>
+                    <td>Mahesh Yadav</td>
+                    <td>Economy</td>
+                    <td>149</td>
+                    <td>86</td>
+                    <td>63</td>
+                    <td>—</td>
+                    <td><span class="badge badge-red">Unpaid</span></td>
+                  </tr>
+                  <tr>
+                    <td>4</td>
+                    <td>CUST-00444</td>
+                    <td>Anita Sharma</td>
+                    <td>Basic SD</td>
+                    <td>199</td>
+                    <td>115</td>
+                    <td>84</td>
+                    <td>10-02-2026</td>
+                    <td><span class="badge badge-green">Paid</span></td>
+                  </tr>
+                  <tr>
+                    <td>5</td>
+                    <td>CUST-00445</td>
+                    <td>Priya Singh</td>
+                    <td>Sports Booster</td>
+                    <td>99</td>
+                    <td>57</td>
+                    <td>42</td>
+                    <td>—</td>
+                    <td><span class="badge badge-red">Unpaid</span></td>
+                  </tr>
+                  <tr>
+                    <td>6</td>
+                    <td>CUST-00446</td>
+                    <td>Kiran Babu</td>
+                    <td>Value HD</td>
+                    <td>399</td>
+                    <td>230</td>
+                    <td>169</td>
+                    <td>12-02-2026</td>
+                    <td><span class="badge badge-green">Paid</span></td>
+                  </tr>
+                  <tr>
+                    <td>7</td>
+                    <td>CUST-00447</td>
+                    <td>Lakshmi Devi</td>
+                    <td>Economy</td>
+                    <td>149</td>
+                    <td>86</td>
+                    <td>63</td>
+                    <td>14-02-2026</td>
+                    <td><span class="badge badge-green">Paid</span></td>
+                  </tr>
+                  <tr>
+                    <td>8</td>
+                    <td>CUST-00448</td>
+                    <td>Venkat Rao</td>
+                    <td>Basic SD</td>
+                    <td>199</td>
+                    <td>115</td>
+                    <td>84</td>
+                    <td>—</td>
+                    <td><span class="badge badge-red">Unpaid</span></td>
+                  </tr>
+                  <tr>
+                    <td>9</td>
+                    <td>CUST-00449</td>
+                    <td>Nageswara Rao</td>
+                    <td>News Pack</td>
+                    <td>49</td>
+                    <td>28</td>
+                    <td>21</td>
+                    <td>16-02-2026</td>
+                    <td><span class="badge badge-green">Paid</span></td>
+                  </tr>
+                  <tr>
+                    <td>10</td>
+                    <td>CUST-00450</td>
+                    <td>Savitha Kumari</td>
+                    <td>Basic SD</td>
+                    <td>199</td>
+                    <td>115</td>
+                    <td>84</td>
+                    <td>18-02-2026</td>
+                    <td><span class="badge badge-green">Paid</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+
+        </div><!-- content -->
+      </div><!-- main -->
+    </div><!-- layout -->
+  </div><!-- dashPage -->
+
+  <script>
+    // ─── CAPTCHA ───
+    const CHARS = '0123456789';
+    let captchaCode = '';
+
+    function drawCaptcha() {
+      captchaCode = Array.from({ length: 5 }, () => CHARS[Math.floor(Math.random() * CHARS.length)]).join('');
+      const canvas = document.getElementById('captchaCanvas');
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#fff8f8';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // noise lines
+      for (let i = 0; i < 8; i++) {
+        ctx.strokeStyle = `rgba(${Math.random() * 200 | 0},0,0,0.4)`;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(Math.random() * 140, Math.random() * 48);
+        ctx.bezierCurveTo(Math.random() * 140, Math.random() * 48, Math.random() * 140, Math.random() * 48, Math.random() * 140, Math.random() * 48);
+        ctx.stroke();
+      }
+
+      // text
+      ctx.font = 'bold 22px "Courier New", monospace';
+      ctx.textBaseline = 'middle';
+      captchaCode.split('').forEach((ch, i) => {
+        ctx.fillStyle = `hsl(${Math.random() * 30},70%,35%)`;
+        ctx.save();
+        ctx.translate(18 + i * 24, 24 + (Math.random() * 8 - 4));
+        ctx.rotate((Math.random() - 0.5) * 0.3);
+        ctx.fillText(ch, 0, 0);
+        ctx.restore();
+      });
+    }
+
+    drawCaptcha();
+    document.getElementById('captchaRefresh').addEventListener('click', () => {
+      drawCaptcha();
+      document.getElementById('captchaInput').value = '';
+    });
+
+    // ─── LOGIN ───
+    const ADMIN_KEY = 'cable_admin_pw_set';
+    const ADMIN_USER_KEY = 'cable_admin_user_set';
+    const SESS_KEY = 'cable_admin_logged_in';
+
+    document.getElementById('doLogin').addEventListener('click', doLogin);
+    document.querySelectorAll('#loginPage input').forEach(inp => inp.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); }));
+
+    // Set / Change Credentials link
+    document.getElementById('setCredsLink').addEventListener('click', () => {
+      const newUser = prompt('Enter new admin username:');
+      if (!newUser) return;
+      const newPass = prompt('Enter new admin password (min 4 chars):');
+      if (!newPass || newPass.length < 4) { alert('Password too short.'); return; }
+      localStorage.setItem(ADMIN_USER_KEY, btoa(newUser));
+      localStorage.setItem(ADMIN_KEY, btoa(newPass));
+      alert(`Credentials saved!\nUsername: ${newUser}\nYou can now login.`);
+    });
+
+    function doLogin() {
+      const user = document.getElementById('lUser').value.trim();
+      const pass = document.getElementById('lPass').value;
+      const cap = document.getElementById('captchaInput').value.trim();
+      const errEl = document.getElementById('loginErr');
+      errEl.style.display = 'none';
+
+      if (cap !== captchaCode) {
+        errEl.textContent = 'Incorrect captcha. Please try again.';
+        errEl.style.display = 'block';
+        drawCaptcha();
+        document.getElementById('captchaInput').value = '';
+        return;
+      }
+
+      const storedUser = localStorage.getItem(ADMIN_USER_KEY);
+      const storedPass = localStorage.getItem(ADMIN_KEY);
+
+      // Check username (if custom set, must match; else any non-empty)
+      const userOk = storedUser ? (btoa(user) === storedUser) : (user.length > 0);
+      // Check password (if custom set, must match; else default admin123)
+      const passOk = storedPass ? (btoa(pass) === storedPass) : (pass === 'admin123');
+
+      if (!userOk || !passOk) {
+        errEl.textContent = 'Invalid username or password.';
+        errEl.style.display = 'block';
+        drawCaptcha();
+        document.getElementById('captchaInput').value = '';
+        return;
+      }
+
+      localStorage.setItem(SESS_KEY, '1');
+      showDash();
+    }
+
+    function showDash() {
+      document.getElementById('loginPage').style.display = 'none';
+      document.getElementById('dashPage').style.display = 'block';
+      updateRequestBadge();
+      try {
+        const subs = JSON.parse(localStorage.getItem('cable_submissions') || '[]');
+        if (subs.length) {
+          document.getElementById('totalCust').textContent = (2221 + subs.length).toLocaleString();
+        }
+      } catch (_) { }
+    }
+
+    // ─── LIVE NOTIFICATION BADGE ───
+    function updateRequestBadge() {
+      try {
+        const subs = JSON.parse(localStorage.getItem('cable_submissions') || '[]');
+        const count = subs.length;
+        const badge = document.getElementById('custBadge');
+        const banner = document.getElementById('reqBanner');
+        const reqCount = document.getElementById('reqCount');
+        if (count > 0) {
+          badge.textContent = count;
+          badge.classList.add('show');
+          reqCount.textContent = count;
+          banner.classList.add('show');
+        } else {
+          badge.classList.remove('show');
+          banner.classList.remove('show');
+        }
+      } catch (_) { }
+    }
+
+    // Auto-update when customer submits form in another tab
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'cable_submissions') updateRequestBadge();
+    });
+    // Also poll every 5s for same-tab updates
+    setInterval(updateRequestBadge, 5000);
+
+    function doLogout() {
+      localStorage.removeItem(SESS_KEY);
+      document.getElementById('loginPage').style.display = 'flex';
+      document.getElementById('dashPage').style.display = 'none';
+      document.getElementById('lUser').value = '';
+      document.getElementById('lPass').value = '';
+      document.getElementById('captchaInput').value = '';
+      drawCaptcha();
+    }
+
+    // ─── NAVIGATION ───
+    const BREADCRUMBS = {
+      dashboard: '🏠 Dashboard › <span>Dashboard</span>',
+      das: '🏠 Dashboard › <span>DAS</span>',
+      stb: '🏠 Dashboard › <span>STB</span>',
+      customers: '🏠 Dashboard › <span>Customers</span>',
+      users: '🏠 Dashboard › <span>Users</span>',
+      products: '🏠 Dashboard › <span>Products</span>',
+      complaints: '🏠 Dashboard › <span>Complaints</span>',
+      reports: '🏠 Dashboard › <span>Reports</span>',
+      billing: '🏠 Dashboard › <span>Customer Billing Share</span>',
+    };
+
+    const SECTIONS = ['dashboard', 'das', 'stb', 'customers', 'users', 'products', 'complaints', 'reports', 'billing'];
+
+    function navigate(section) {
+      // Update sidebar active state
+      SECTIONS.forEach(s => {
+        const el = document.getElementById('nav-' + s);
+        if (el) el.classList.toggle('active', s === section);
+      });
+
+      // Update breadcrumb
+      document.getElementById('topBreadcrumb').innerHTML = BREADCRUMBS[section] || '';
+
+      // Hide all panels
+      document.getElementById('mainDash').style.display = 'none';
+      document.getElementById('subSection').style.display = 'none';
+      SECTIONS.forEach(s => {
+        const el = document.getElementById('sec-' + s);
+        if (el) el.classList.remove('active');
+      });
+
+      // Show the right panel
+      if (section === 'dashboard') {
+        document.getElementById('mainDash').style.display = 'block';
+      } else if (section === 'customers') {
+        document.getElementById('subSection').style.display = 'block';
+        loadSubs();
+      } else {
+        const panel = document.getElementById('sec-' + section);
+        if (panel) panel.classList.add('active');
+      }
+    }
+
+    // legacy alias kept for req-banner click
+    function showSub(show) { navigate(show ? 'customers' : 'dashboard'); }
+
+    function loadSubs() {
+      const data = JSON.parse(localStorage.getItem('cable_submissions') || '[]');
+      const body = document.getElementById('subBody');
+      if (!data.length) {
+        body.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#aaa">No submissions yet</td></tr>';
+        return;
+      }
+      body.innerHTML = data.map((s, i) => `<tr>
+      <td>${i + 1}</td>
+      <td>${esc(s.name)}</td>
+      <td>${esc(s.phone)}</td>
+      <td>${esc(s.message)}</td>
+      <td>${new Date(s.time).toLocaleString()}</td>
+    </tr>`).join('');
+    }
+
+    function clearSubs() {
+      if (!confirm('Clear all submissions?')) return;
+      localStorage.removeItem('cable_submissions');
+      loadSubs();
+      updateRequestBadge();
+    }
+
+    function exportSubs() {
+      const blob = new Blob([localStorage.getItem('cable_submissions') || '[]'], { type: 'application/json' });
+      const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(blob), download: 'submissions.json' });
+      a.click(); URL.revokeObjectURL(a.href);
+    }
+
+    function esc(s) { return s ? s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])) : ''; }
+
+    // ─── AUTO LOGIN if session exists ───
+    if (localStorage.getItem(SESS_KEY)) showDash();
+  </script>
+</body>
+
+</html>
